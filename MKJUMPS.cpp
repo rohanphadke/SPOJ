@@ -13,32 +13,32 @@ int cnt;
 bool pt;
 
 int func(int vert){
-	// cout<<"in func for "<<vert<<endl;
+
+	// set visited to true at start of processing
 	vis[vert]=true;
 	bool isMovePossible=false;
+	
 	int minLeft=99999;
+	
+	// check if move is possible to any neighbor, answer is minimum of all possible moves
 	for(int i=0;i<v[vert].size();i++){
 		if(!vis[v[vert][i]]){
 			isMovePossible=true;
 			minLeft=min(minLeft,func(v[vert][i]));
-			// if(pt){
-			// 	cout<<"in func for "<<vert<<endl;
-			// 	return minLeft;
-			// }
 		}
 	}
+
+	// if no move possible, we have reached end of a path - count unvisited squares and return answer
 	if(!isMovePossible){
 		minLeft=0;
 		for(int i=1;i<cnt;i++){
 			if(!vis[i])	minLeft++;
 		}
 	}
-	// cout<<"Count for "<<vert<<" is "<<minLeft<<endl;
+
+	// set visited to false for allowing further backtracking traversals for possible better answer
 	vis[vert]=false;
-	// if(minLeft==3){
-	// 	pt=true;
-	// 	cout<<"in func for "<<vert<<endl;
-	// }
+	
 	return minLeft;
 }
 
@@ -46,6 +46,8 @@ int main() {
 	pt=false;
 	int cs=0;
 	while(1){
+
+		// initial set up
 		sqtonum.clear();
 		numtosq.clear();
 		for(int i=0;i<101;i++){
@@ -54,6 +56,8 @@ int main() {
 
 		cs++;
 		int n;
+
+		// read data
 		scanf("%d",&n);
 		if(n==0){
 			break;
@@ -72,19 +76,11 @@ int main() {
 			}
 		}
 
-		cout<<" CS = "<<cs<<endl;
-		
-		if(cs==2){
-			for(int i=0;i<n;i++){
-				for(int j=start[i];j<=end[i];j++){
-					cout<<sqtonum[make_pair(i,j)]<<" ";
-				}
-				cout<<endl;
-			}
-		}
 
+		// populate graph
 		for(int i=1;i<cnt;i++){
 			vis[i] = false;
+			v[i].clear();
 			pair<int,int> p = numtosq[i];
 			int x=p.first;
 			int y=p.second;
@@ -114,14 +110,13 @@ int main() {
 			}
 		}
 
-		// for(int i=1;i<cnt;i++){
-		// 	for(int j=0;j<v[i].size();j++){
-		// 		cout<<v[i][j]<<" ";
-		// 	}
-		// 	cout<<endl;
-		// }
-
-		cout<<func(1)<<endl;
+		// backtracking solution
+		int ans=func(1);
+		if(ans==1){
+			cout<<"Case "<<cs<<", "<<ans<<" square can not be reached."<<endl;
+		}else{
+			cout<<"Case "<<cs<<", "<<ans<<" squares can not be reached."<<endl;
+		}
 	}
 	return 0;
 }
